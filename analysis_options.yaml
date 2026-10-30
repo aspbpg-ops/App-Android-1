@@ -1,0 +1,13 @@
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+include: package:very_good_analysis/analysis_options.yaml
+
+linter:
+  rules:
+    public_member_api_docs: false
+    # Se mantiene la sintaxis clásica de constructores, más fácil de leer.
+    unnecessary_type_name_in_constructor: false
+    unnecessary_const_in_enum_constructor: false
