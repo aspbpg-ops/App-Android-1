@@ -5,6 +5,7 @@ import 'package:asistente_app/core/datos/datos_app.dart';
 import 'package:asistente_app/core/fechas.dart';
 import 'package:asistente_app/features/familiares/domain/familiar.dart';
 import 'package:asistente_app/features/fichas/domain/ficha.dart';
+import 'package:asistente_app/features/notas/domain/nota.dart';
 import 'package:asistente_app/features/perfil/domain/perfil.dart';
 import 'package:asistente_app/features/recordatorios/domain/recordatorio.dart';
 import 'package:flutter/foundation.dart';
@@ -149,6 +150,39 @@ class DatosController extends Notifier<DatosApp> {
     state.copyWith(
       recordatorios: state.recordatorios.where((r) => r.id != id).toList(),
     ),
+  );
+
+  Nota agregarNota({required String texto, required String categoria}) {
+    final nota = Nota(
+      id: _nuevoId(),
+      texto: texto.trim(),
+      categoria: categoria.trim(),
+      creada: _ahora,
+    );
+    _guardar(state.copyWith(notas: [nota, ...state.notas]));
+    return nota;
+  }
+
+  void editarNota(Nota nota) => _guardar(
+    state.copyWith(
+      notas: [
+        for (final n in state.notas)
+          if (n.id == nota.id) nota else n,
+      ],
+    ),
+  );
+
+  void alternarNotaPendiente(String id) => _guardar(
+    state.copyWith(
+      notas: [
+        for (final n in state.notas)
+          if (n.id == id) n.copyWith(pendiente: !n.pendiente) else n,
+      ],
+    ),
+  );
+
+  void borrarNota(String id) => _guardar(
+    state.copyWith(notas: state.notas.where((n) => n.id != id).toList()),
   );
 
   void borrarTodo() => _guardar(const DatosApp());

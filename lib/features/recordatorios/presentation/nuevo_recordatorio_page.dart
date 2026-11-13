@@ -8,10 +8,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const opcionesRepeticion = [0, 1, 2, 3, 6, 12];
 
 class NuevoRecordatorioPage extends ConsumerStatefulWidget {
-  const NuevoRecordatorioPage({this.fichaId, super.key});
+  const NuevoRecordatorioPage({
+    this.fichaId,
+    this.fechaInicial,
+    this.tituloInicial = '',
+    super.key,
+  });
 
   /// Si viene de una ficha, el recordatorio queda ligado a ella.
   final String? fichaId;
+  final DateTime? fechaInicial;
+
+  /// Texto ya dictado o escrito en otro lado.
+  final String tituloInicial;
 
   @override
   ConsumerState<NuevoRecordatorioPage> createState() =>
@@ -19,8 +28,8 @@ class NuevoRecordatorioPage extends ConsumerStatefulWidget {
 }
 
 class _NuevoRecordatorioPageState extends ConsumerState<NuevoRecordatorioPage> {
-  var _titulo = '';
-  DateTime? _fecha;
+  late String _titulo = widget.tituloInicial;
+  late DateTime? _fecha = widget.fechaInicial;
   var _cadaMeses = 0;
 
   bool get _listo => _titulo.trim().isNotEmpty && _fecha != null;
@@ -48,8 +57,9 @@ class _NuevoRecordatorioPageState extends ConsumerState<NuevoRecordatorioPage> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            TextField(
+            TextFormField(
               key: const Key('campo-titulo'),
+              initialValue: _titulo,
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(

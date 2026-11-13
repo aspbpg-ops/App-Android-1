@@ -116,11 +116,53 @@ void main() {
 
   testWidgets('borrar todo regresa al onboarding', (tester) async {
     final almacen = await abrir(tester, conPerfil);
-    await tocar(tester, find.text('Perfil'));
+    await tocar(tester, find.byKey(const Key('boton-perfil')));
     await tocar(tester, find.byKey(const Key('boton-borrar-todo')));
     await tocar(tester, find.text('Borrar'));
 
     expect(find.text('Paso 1 de 4'), findsOneWidget);
     expect(almacen.datos.perfil, isNull);
+  });
+
+  testWidgets('una nota se guarda con su categoría y se filtra', (
+    tester,
+  ) async {
+    final almacen = await abrir(tester, conPerfil);
+    await tocar(tester, find.text('Notas'));
+    expect(find.text('Sin notas'), findsOneWidget);
+
+    await tocar(tester, find.byKey(const Key('boton-agregar')));
+    await tester.enterText(
+      find.byKey(const Key('campo-nota')),
+      'Llamar al plomero del 3B',
+    );
+    await tocar(tester, find.byKey(const Key('categoria-Rentas')));
+    await tocar(tester, find.byKey(const Key('boton-guardar-nota')));
+
+    expect(find.text('Llamar al plomero del 3B'), findsOneWidget);
+    expect(find.text('Pendientes (1)'), findsOneWidget);
+    expect(almacen.datos.notas.single.categoria, 'Rentas');
+
+    await tocar(tester, find.byType(Checkbox));
+    expect(find.text('Terminadas (1)'), findsOneWidget);
+    expect(almacen.datos.notas.single.pendiente, isFalse);
+  });
+
+  testWidgets('el calendario muestra lo pendiente del día elegido', (
+    tester,
+  ) async {
+    await abrir(tester, conPerfil);
+    await tocar(tester, find.byKey(const Key('boton-agregar')));
+    await tester.enterText(find.byKey(const Key('campo-titulo')), 'Dentista');
+    await tocar(tester, find.byKey(const Key('campo-fecha')));
+    await tocar(tester, find.text('20'));
+    await tocar(tester, find.text('ACEPTAR'));
+    await tocar(tester, find.byKey(const Key('boton-guardar')));
+
+    await tocar(tester, find.text('Calendario'));
+    expect(find.text('Noviembre de 2026'), findsOneWidget);
+    expect(find.text('Nada para este día.'), findsOneWidget);
+    await tocar(tester, find.byKey(const Key('dia-20')));
+    expect(find.text('Dentista'), findsOneWidget);
   });
 }

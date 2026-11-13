@@ -95,6 +95,15 @@ void main() {
     expect(datos().recordatorios, isEmpty);
   });
 
+  test('las notas nuevas van primero y suman categorías propias', () {
+    controller()
+      ..agregarNota(texto: 'Comprar focos', categoria: 'Compras')
+      ..agregarNota(texto: ' Rutina de pierna ', categoria: 'Gimnasio');
+    expect(datos().notas.first.texto, 'Rutina de pierna');
+    expect(datos().categorias, contains('Gimnasio'));
+    expect(datos().categorias.where((c) => c == 'Compras'), hasLength(1));
+  });
+
   test('los datos sobreviven a cerrar y abrir la app', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -112,7 +121,8 @@ void main() {
         cumple: DateTime(1990, 3, 5),
         telefono: '5512345678',
       )
-      ..agregarFicha(tipo: TipoFicha.renta, nombre: 'Depto 3B');
+      ..agregarFicha(tipo: TipoFicha.renta, nombre: 'Depto 3B')
+      ..agregarNota(texto: 'Pintar la reja', categoria: 'Casa');
     await Future<void>.delayed(Duration.zero);
     primera.dispose();
 
@@ -124,6 +134,7 @@ void main() {
     expect(leidos.perfil!.nombre, 'Alex');
     expect(leidos.familiares.single.telefono, '5512345678');
     expect(leidos.fichas.single.tipo, TipoFicha.renta);
+    expect(leidos.notas.single.categoria, 'Casa');
     expect(leidos.recordatorios.single.familiarId, leidos.familiares.single.id);
   });
 
