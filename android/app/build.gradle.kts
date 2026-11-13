@@ -29,11 +29,28 @@ android {
         versionName = flutter.versionName
     }
 
+    // La llave propia llega por variables de entorno (en GitHub, desde los
+    // secretos). Con la misma llave, cada APK nuevo se instala encima del
+    // anterior sin perder los datos.
+    val keystorePath = System.getenv("ASISTENTE_KEYSTORE")
+    signingConfigs {
+        if (keystorePath != null) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("ASISTENTE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ASISTENTE_KEY_ALIAS")
+                keyPassword = System.getenv("ASISTENTE_KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Sin llave propia se firma con la de depuración, para que
+            // `flutter run --release` siga funcionando.
+            signingConfig = signingConfigs.getByName(
+                if (keystorePath != null) "release" else "debug",
+            )
         }
     }
 }

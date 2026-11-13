@@ -6,9 +6,9 @@ compartido entre dos cuentas para repartir responsabilidades y pagos.
 
 ## Tecnología
 
-- Flutter (Dart) con estructura por funcionalidad: `lib/features/<función>/{domain,data,presentation}`.
+- Flutter (Dart) con estructura por funcionalidad: `lib/features/<función>/{domain,presentation}`.
 - Riverpod para el estado y go_router para la navegación.
-- Firebase (Auth, Firestore) como backend, con cifrado de extremo a extremo.
+- Los datos se guardan solo en el celular (`shared_preferences`), sin cuentas ni servidor.
 - Reglas de análisis estrictas con `very_good_analysis`.
 
 ## Cómo correrla
@@ -20,14 +20,17 @@ flutter test         # pruebas
 flutter analyze      # revisión de código
 ```
 
-Mientras no exista `android/app/google-services.json`, la app arranca en
-modo local (sin Firebase).
+## Cómo se arma el APK
+
+Cada cambio en `main` lo compila GitHub Actions y lo publica en la versión
+`ultima` del repositorio (sección Releases) como `asistente.apk`.
 
 ## Estado
 
-- [x] Estructura del proyecto
-- [x] Onboarding paso a paso (nombre, avatar, etapa de vida, invitación, clave de respaldo)
-- [x] Pruebas del onboarding
-- [ ] Conectar Firebase (falta `google-services.json`)
-- [ ] Módulo de cifrado
-- [ ] Fichas, familiares, recordatorios, entorno compartido
+- [x] Bienvenida paso a paso (nombre, avatar, etapa de vida)
+- [x] Fichas con plantillas que proponen recordatorios (auto, casa, mascota, departamento en renta)
+- [x] Familiares con cumpleaños y teléfono
+- [x] Recordatorios agrupados por cercanía, repetidos o de una vez
+- [ ] Notificaciones en el celular
+- [ ] Cifrado y respaldo de los datos
+- [ ] Entorno compartido (requiere servidor)

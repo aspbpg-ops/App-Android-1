@@ -68,8 +68,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                   PasoNombre(),
                   PasoAvatar(),
                   PasoEtapa(),
-                  PasoCompartir(),
-                  PasoRespaldo(),
                 ],
               ),
             ),

@@ -1,5 +1,5 @@
-import 'package:asistente_app/features/home/presentation/home_page.dart';
-import 'package:asistente_app/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:asistente_app/core/datos/datos_controller.dart';
+import 'package:asistente_app/features/inicio/presentation/inicio_page.dart';
 import 'package:asistente_app/features/onboarding/presentation/onboarding_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,12 +11,12 @@ abstract final class Rutas {
 
 final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
-    initialLocation: Rutas.onboarding,
+    initialLocation: Rutas.inicio,
     redirect: (context, state) {
-      final completo = ref.read(onboardingControllerProvider).completo;
+      final conPerfil = ref.read(datosProvider).perfil != null;
       final enOnboarding = state.matchedLocation == Rutas.onboarding;
-      if (!completo && !enOnboarding) return Rutas.onboarding;
-      if (completo && enOnboarding) return Rutas.inicio;
+      if (!conPerfil && !enOnboarding) return Rutas.onboarding;
+      if (conPerfil && enOnboarding) return Rutas.inicio;
       return null;
     },
     routes: [
@@ -26,13 +26,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Rutas.inicio,
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => const InicioPage(),
       ),
     ],
   );
   ref
     ..listen(
-      onboardingControllerProvider.select((d) => d.completo),
+      datosProvider.select((d) => d.perfil != null),
       (_, _) => router.refresh(),
     )
     ..onDispose(router.dispose);

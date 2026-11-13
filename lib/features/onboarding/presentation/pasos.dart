@@ -1,5 +1,5 @@
-import 'package:asistente_app/features/onboarding/domain/perfil_inicial.dart';
 import 'package:asistente_app/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:asistente_app/features/perfil/domain/perfil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,7 +44,8 @@ class PasoBienvenida extends StatelessWidget {
       explicacion:
           'Te ayudo a recordar lo importante: el seguro del auto, las '
           'vacunas de tu mascota, el predial o el cumpleaños de alguien '
-          'querido. Vamos a configurarlo en pocos pasos.',
+          'querido. Todo se guarda solo en este celular. Vamos a '
+          'configurarlo en pocos pasos.',
       child: Text(
         '🗓️',
         textAlign: TextAlign.center,
@@ -61,7 +62,7 @@ class PasoNombre extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _Paso(
       titulo: '¿Cómo te llamas?',
-      explicacion: 'Así te saludaremos y te verán en el entorno compartido.',
+      explicacion: 'Así te saludaremos cada día.',
       child: TextFormField(
         key: const Key('campo-nombre'),
         initialValue: ref.read(onboardingControllerProvider).nombre,
@@ -135,59 +136,6 @@ class PasoEtapa extends ConsumerWidget {
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PasoCompartir extends ConsumerWidget {
-  const PasoCompartir({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final correo = ref.watch(onboardingControllerProvider).correoInvitado;
-    final invalido = correo != null && !esCorreoValido(correo);
-    return _Paso(
-      titulo: '¿Con quién compartes la casa?',
-      explicacion:
-          'Invita a tu pareja o a quien comparta gastos contigo. Podrán '
-          'repartirse responsabilidades y pagos. Si prefieres, déjalo '
-          'vacío y lo haces después.',
-      child: TextFormField(
-        key: const Key('campo-invitado'),
-        initialValue: correo,
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          labelText: 'Correo de la otra persona (opcional)',
-          errorText: invalido ? 'Revisa el correo' : null,
-        ),
-        onChanged: ref.read(onboardingControllerProvider.notifier).invitarA,
-      ),
-    );
-  }
-}
-
-class PasoRespaldo extends ConsumerWidget {
-  const PasoRespaldo({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final entendido = ref.watch(onboardingControllerProvider).respaldoEntendido;
-    return _Paso(
-      titulo: 'Tus datos son solo tuyos 🔒',
-      explicacion:
-          'Todo se guarda cifrado, como en WhatsApp: ni nosotros podemos '
-          'leerlo. Al terminar crearás una clave de respaldo. Si cambias de '
-          'celular la necesitarás, y si la pierdes no podremos recuperar '
-          'tus datos.',
-      child: CheckboxListTile(
-        key: const Key('check-respaldo'),
-        value: entendido,
-        title: const Text('Entiendo que debo guardar mi clave de respaldo'),
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (valor) => ref
-            .read(onboardingControllerProvider.notifier)
-            .confirmarRespaldo(entendido: valor ?? false),
       ),
     );
   }

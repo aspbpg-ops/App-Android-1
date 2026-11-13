@@ -1,6 +1,7 @@
 import 'package:asistente_app/app/router.dart';
 import 'package:asistente_app/app/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AsistenteApp extends ConsumerWidget {
@@ -13,6 +14,9 @@ class AsistenteApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: temaClaro(),
       darkTheme: temaOscuro(),
+      locale: const Locale('es', 'MX'),
+      supportedLocales: const [Locale('es', 'MX')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routerConfig: ref.watch(routerProvider),
     );
   }
