@@ -1,18 +1,25 @@
 import 'package:asistente_app/core/datos/datos_controller.dart';
 import 'package:asistente_app/core/fechas.dart';
 import 'package:asistente_app/core/widgets/estado_vacio.dart';
+import 'package:asistente_app/features/fichas/domain/ficha.dart';
 import 'package:asistente_app/features/fichas/presentation/ficha_detalle_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FichasTab extends ConsumerWidget {
-  const FichasTab({super.key});
+  const FichasTab({this.tipos, super.key});
+
+  /// Solo muestra estos tipos; todas si es `null`.
+  final Set<TipoFicha>? tipos;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final datos = ref.watch(datosProvider);
     final hoy = ref.watch(relojProvider)();
-    if (datos.fichas.isEmpty) {
+    final fichas = datos.fichas
+        .where((f) => tipos == null || tipos!.contains(f.tipo))
+        .toList();
+    if (fichas.isEmpty) {
       return const EstadoVacio(
         icono: '🗂️',
         titulo: 'Aún no tienes fichas',
@@ -25,7 +32,7 @@ class FichasTab extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
       children: [
-        for (final ficha in datos.fichas)
+        for (final ficha in fichas)
           Card(
             child: Builder(
               builder: (context) {

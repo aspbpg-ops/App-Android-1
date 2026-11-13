@@ -18,10 +18,15 @@ class MiVidaTab extends ConsumerWidget {
     final p = Paleta.de(context);
 
     String resumen(Acceso a) => switch (a) {
-      Acceso.familia => '${datos.familiares.length} personas',
-      Acceso.fichas => '${datos.fichas.length} registradas',
-      Acceso.notas =>
-        '${datos.notas.where((n) => n.pendiente).length} pendientes',
+      Acceso.familia => _cuantos(datos.familiares.length, 'persona'),
+      Acceso.auto || Acceso.mascotas || Acceso.casa => _cuantos(
+        datos.fichas.where((f) => a.tipos!.contains(f.tipo)).length,
+        'registrada',
+      ),
+      Acceso.notas => _cuantos(
+        datos.notas.where((n) => n.pendiente).length,
+        'pendiente',
+      ),
       Acceso.perfil => 'Tu información',
     };
 
@@ -63,7 +68,8 @@ class MiVidaTab extends ConsumerWidget {
                             color: p.detalle,
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: Icon(a.icono, color: p.texto, size: 22),
+                          padding: const EdgeInsets.all(10),
+                          child: IconoAcceso(a, tamano: 24),
                         ),
                         const Spacer(),
                         Text(
@@ -123,3 +129,7 @@ class MiVidaTab extends ConsumerWidget {
     );
   }
 }
+
+/// "1 persona", "3 personas", "Ninguna" si es cero.
+String _cuantos(int n, String palabra) =>
+    n == 0 ? 'Ninguna' : '$n $palabra${n == 1 ? '' : 's'}';

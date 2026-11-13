@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "mx.asistente.asistente_app"
-    compileSdk = flutter.compileSdkVersion
+    // androidx.core 1.19 (de las notificaciones) pide compilar con Android 37.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

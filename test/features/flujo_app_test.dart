@@ -167,7 +167,7 @@ void main() {
     expect(almacen.datos.notas.single.categoria, 'Rentas');
 
     await tocar(tester, find.text('Mi vida'));
-    expect(find.text('1 pendientes'), findsOneWidget);
+    expect(find.text('1 pendiente'), findsOneWidget);
     await tocar(tester, find.byKey(const Key('mi-vida-notas')));
     expect(find.text('El inquilino del 3B reportó una fuga'), findsOneWidget);
     await tocar(tester, find.byType(Checkbox));
@@ -252,9 +252,19 @@ void main() {
     expect(notificador.programados.first.cuerpo, 'Mañana: Llamar a mamá.');
   });
 
+  testWidgets('Mi auto muestra solo autos y agrega directo un auto', (
+    tester,
+  ) async {
+    await abrir(tester, conPerfil);
+    await tocar(tester, find.byKey(const Key('acceso-auto')));
+    expect(find.text('Aún no tienes fichas'), findsOneWidget);
+    await tocar(tester, find.byKey(const Key('boton-agregar-seccion')));
+    expect(find.text('Nueva ficha · Paso 2 de 3'), findsOneWidget);
+  });
+
   testWidgets('borrar todo regresa al onboarding', (tester) async {
     final almacen = await abrir(tester, conPerfil);
-    await tocar(tester, find.byKey(const Key('acceso-perfil')));
+    await tocar(tester, find.byKey(const Key('boton-perfil')));
     await tester.scrollUntilVisible(
       find.byKey(const Key('boton-borrar-todo')),
       300,

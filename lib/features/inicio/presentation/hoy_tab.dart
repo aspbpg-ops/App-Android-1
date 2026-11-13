@@ -44,9 +44,24 @@ class HoyTab extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       children: [
-        Text(
-          '${_saludo(ahora)}, ${datos.perfil?.nombre ?? ''}',
-          style: texto.bodyLarge?.copyWith(color: p.textoSecundario),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '${_saludo(ahora)}, ${datos.perfil?.nombre ?? ''}',
+                style: texto.bodyLarge?.copyWith(color: p.textoSecundario),
+              ),
+            ),
+            IconButton(
+              key: const Key('boton-perfil'),
+              tooltip: 'Mi perfil',
+              onPressed: () => Acceso.perfil.abrir(context),
+              icon: Text(
+                datos.perfil?.avatar ?? '🙂',
+                style: const TextStyle(fontSize: 26),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         Text(p.lema, style: texto.displaySmall),
@@ -73,7 +88,7 @@ class HoyTab extends ConsumerWidget {
         const SizedBox(height: 20),
         Row(
           children: [
-            for (final acceso in Acceso.values)
+            for (final acceso in Acceso.enHoy)
               Expanded(child: _AccesoRedondo(acceso: acceso)),
           ],
         ),
@@ -201,7 +216,8 @@ class _AccesoRedondo extends StatelessWidget {
                 color: p.detalle,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(acceso.icono, color: p.texto),
+              padding: const EdgeInsets.all(14),
+              child: IconoAcceso(acceso),
             ),
             const SizedBox(height: 8),
             Text(

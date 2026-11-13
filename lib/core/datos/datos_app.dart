@@ -1,3 +1,4 @@
+import 'package:asistente_app/core/datos/migraciones.dart';
 import 'package:asistente_app/features/familiares/domain/familiar.dart';
 import 'package:asistente_app/features/fichas/domain/ficha.dart';
 import 'package:asistente_app/features/notas/domain/nota.dart';
@@ -74,6 +75,7 @@ class DatosApp {
   );
 
   Map<String, dynamic> toJson() => {
+    'version': versionDatos,
     'perfil': perfil?.toJson(),
     'fichas': [for (final f in fichas) f.toJson()],
     'familiares': [for (final f in familiares) f.toJson()],
