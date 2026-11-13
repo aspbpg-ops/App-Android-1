@@ -15,6 +15,7 @@ dependencies:
   go_router: ^18.1.2
   intl: any
   shared_preferences: ^2.5.6
+  speech_to_text: ^7.5.0
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +25,22 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: DM Sans
+      fonts:
+        - asset: assets/fonts/DMSans_400Regular.ttf
+        - asset: assets/fonts/DMSans_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/DMSans_600SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/DMSans_700Bold.ttf
+          weight: 700
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter_400Regular.ttf
+        - asset: assets/fonts/Inter_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter_600SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter_700Bold.ttf
+          weight: 700

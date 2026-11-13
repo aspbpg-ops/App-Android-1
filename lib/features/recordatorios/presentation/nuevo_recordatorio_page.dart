@@ -12,6 +12,7 @@ class NuevoRecordatorioPage extends ConsumerStatefulWidget {
     this.fichaId,
     this.fechaInicial,
     this.tituloInicial = '',
+    this.horaInicial,
     super.key,
   });
 
@@ -21,6 +22,7 @@ class NuevoRecordatorioPage extends ConsumerStatefulWidget {
 
   /// Texto ya dictado o escrito en otro lado.
   final String tituloInicial;
+  final int? horaInicial;
 
   @override
   ConsumerState<NuevoRecordatorioPage> createState() =>
@@ -30,6 +32,7 @@ class NuevoRecordatorioPage extends ConsumerStatefulWidget {
 class _NuevoRecordatorioPageState extends ConsumerState<NuevoRecordatorioPage> {
   late String _titulo = widget.tituloInicial;
   late DateTime? _fecha = widget.fechaInicial;
+  late int? _hora = widget.horaInicial;
   var _cadaMeses = 0;
 
   bool get _listo => _titulo.trim().isNotEmpty && _fecha != null;
@@ -42,6 +45,7 @@ class _NuevoRecordatorioPageState extends ConsumerState<NuevoRecordatorioPage> {
             titulo: _titulo,
             fecha: _fecha!,
             cadaMeses: _cadaMeses,
+            hora: _hora,
           ),
           fichaId: widget.fichaId,
         );
@@ -76,6 +80,34 @@ class _NuevoRecordatorioPageState extends ConsumerState<NuevoRecordatorioPage> {
               primera: hoy,
               ultima: DateTime(hoy.year + 10, 12, 31),
               onCambio: (fecha) => setState(() => _fecha = fecha),
+            ),
+            const SizedBox(height: 20),
+            InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () async {
+                final elegida = await showTimePicker(
+                  context: context,
+                  initialTime: _hora == null
+                      ? const TimeOfDay(hour: 9, minute: 0)
+                      : TimeOfDay(hour: _hora! ~/ 60, minute: _hora! % 60),
+                );
+                if (elegida != null) {
+                  setState(() => _hora = elegida.hour * 60 + elegida.minute);
+                }
+              },
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: '¿A qué hora? (opcional)',
+                  suffixIcon: _hora == null
+                      ? const Icon(Icons.schedule)
+                      : IconButton(
+                          tooltip: 'Quitar hora',
+                          icon: const Icon(Icons.close),
+                          onPressed: () => setState(() => _hora = null),
+                        ),
+                ),
+                child: Text(_hora == null ? 'Todo el día' : textoHora(_hora!)),
+              ),
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<int>(

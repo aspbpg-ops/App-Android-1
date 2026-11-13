@@ -6,12 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Crear o editar una nota. Sin [nota] es una nueva.
 class NotaPage extends ConsumerStatefulWidget {
-  const NotaPage({this.nota, this.textoInicial = '', super.key});
+  const NotaPage({
+    this.nota,
+    this.textoInicial = '',
+    this.categoriaInicial,
+    super.key,
+  });
 
   final Nota? nota;
 
   /// Texto ya dictado o escrito en otro lado.
   final String textoInicial;
+  final String? categoriaInicial;
 
   @override
   ConsumerState<NotaPage> createState() => _NotaPageState();
@@ -21,7 +27,8 @@ class _NotaPageState extends ConsumerState<NotaPage> {
   late final _texto = TextEditingController(
     text: widget.nota?.texto ?? widget.textoInicial,
   );
-  late String _categoria = widget.nota?.categoria ?? categoriasBase.first;
+  late String _categoria =
+      widget.nota?.categoria ?? widget.categoriaInicial ?? categoriasBase.first;
 
   @override
   void dispose() {

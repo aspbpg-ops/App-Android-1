@@ -54,7 +54,7 @@ class DatosApp {
   /// Recordatorios sin cumplir, del más próximo al más lejano.
   List<Recordatorio> get pendientes =>
       recordatorios.where((r) => !r.hecho).toList()
-        ..sort((a, b) => a.fecha.compareTo(b.fecha));
+        ..sort((a, b) => a.momento.compareTo(b.momento));
 
   List<Recordatorio> pendientesDeFicha(String fichaId) =>
       pendientes.where((r) => r.fichaId == fichaId).toList();

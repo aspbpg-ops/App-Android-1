@@ -21,11 +21,13 @@ class RecordatorioNuevo {
     required this.titulo,
     required this.fecha,
     this.cadaMeses = 0,
+    this.hora,
   });
 
   final String titulo;
   final DateTime fecha;
   final int cadaMeses;
+  final int? hora;
 }
 
 class DatosController extends Notifier<DatosApp> {
@@ -64,6 +66,7 @@ class DatosController extends Notifier<DatosApp> {
               titulo: r.titulo,
               fecha: soloDia(r.fecha),
               cadaMeses: r.cadaMeses,
+              hora: r.hora,
               fichaId: ficha.id,
             ),
         ],
@@ -130,6 +133,7 @@ class DatosController extends Notifier<DatosApp> {
               titulo: nuevo.titulo.trim(),
               fecha: soloDia(nuevo.fecha),
               cadaMeses: nuevo.cadaMeses,
+              hora: nuevo.hora,
               fichaId: fichaId,
             ),
           ],
@@ -142,6 +146,16 @@ class DatosController extends Notifier<DatosApp> {
       recordatorios: [
         for (final r in state.recordatorios)
           if (r.id == id) r.cumplido() else r,
+      ],
+    ),
+  );
+
+  /// Deshace un [cumplir]: regresa el recordatorio como estaba.
+  void restaurar(Recordatorio anterior) => _guardar(
+    state.copyWith(
+      recordatorios: [
+        for (final r in state.recordatorios)
+          if (r.id == anterior.id) anterior else r,
       ],
     ),
   );

@@ -49,8 +49,10 @@ class _CalendarioTabState extends ConsumerState<CalendarioTab> {
     final titulo = fechaLarga(_mes).split(' de ').skip(1).join(' de ');
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       children: [
+        Text('Calendario', style: texto.displaySmall),
+        const SizedBox(height: 12),
         Row(
           children: [
             IconButton(

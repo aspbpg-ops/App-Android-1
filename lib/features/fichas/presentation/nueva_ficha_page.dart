@@ -8,7 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Asistente para crear una ficha: qué es, cómo se llama y qué recordar.
 class NuevaFichaPage extends ConsumerStatefulWidget {
-  const NuevaFichaPage({super.key});
+  const NuevaFichaPage({this.tipoInicial, this.nombreInicial = '', super.key});
+
+  /// Si ya se sabe qué es (por ejemplo, dictado), salta la primera pregunta.
+  final TipoFicha? tipoInicial;
+  final String nombreInicial;
 
   @override
   ConsumerState<NuevaFichaPage> createState() => _NuevaFichaPageState();
@@ -17,7 +21,7 @@ class NuevaFichaPage extends ConsumerStatefulWidget {
 class _NuevaFichaPageState extends ConsumerState<NuevaFichaPage> {
   var _paso = 0;
   TipoFicha? _tipo;
-  var _nombre = '';
+  late String _nombre = widget.nombreInicial;
 
   /// Fecha elegida para cada sugerencia aceptada.
   final _fechas = <Sugerencia, DateTime>{};
@@ -25,6 +29,13 @@ class _NuevaFichaPageState extends ConsumerState<NuevaFichaPage> {
 
   bool get _tieneSugerencias => _tipo?.sugerencias.isNotEmpty ?? false;
   bool get _esUltimo => _paso == 2 || (_paso == 1 && !_tieneSugerencias);
+
+  @override
+  void initState() {
+    super.initState();
+    final tipo = widget.tipoInicial;
+    if (tipo != null) _elegirTipo(tipo);
+  }
 
   void _elegirTipo(TipoFicha tipo) {
     final hoy = soloDia(ref.read(relojProvider)());
