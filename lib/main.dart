@@ -1,5 +1,6 @@
 import 'package:asistente_app/app/app.dart';
 import 'package:asistente_app/core/datos/almacen.dart';
+import 'package:asistente_app/features/avisos/data/notificador.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,9 +8,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
+  final notificador = await NotificadorAndroid.crear();
   runApp(
     ProviderScope(
-      overrides: [almacenProvider.overrideWithValue(AlmacenLocal(prefs))],
+      overrides: [
+        almacenProvider.overrideWithValue(AlmacenLocal(prefs)),
+        notificadorProvider.overrideWithValue(notificador),
+      ],
       child: const AsistenteApp(),
     ),
   );

@@ -3,6 +3,7 @@ import 'package:asistente_app/core/datos/almacen.dart';
 import 'package:asistente_app/core/datos/datos_app.dart';
 import 'package:asistente_app/core/datos/datos_controller.dart';
 import 'package:asistente_app/features/asistente/domain/dictado.dart';
+import 'package:asistente_app/features/avisos/data/notificador.dart';
 import 'package:asistente_app/features/perfil/domain/perfil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -213,9 +214,51 @@ void main() {
     expect(find.text('Ir al dentista'), findsOneWidget);
   });
 
+  testWidgets('las notificaciones se reprograman al cambiar los datos', (
+    tester,
+  ) async {
+    final notificador = NotificadorNulo();
+    tester.view
+      ..physicalSize = const Size(1080, 2400)
+      ..devicePixelRatio = 2.625;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          almacenProvider.overrideWithValue(AlmacenEnMemoria(conPerfil)),
+          relojProvider.overrideWithValue(() => hoy),
+          notificadorProvider.overrideWithValue(notificador),
+        ],
+        child: const AsistenteApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(notificador.programados, isEmpty);
+
+    await tocar(tester, find.byKey(const Key('barra-asistente')));
+    await tester.enterText(
+      find.byKey(const Key('campo-asistente')),
+      'recuérdame mañana a las 10 llamar a mamá',
+    );
+    await tester.pump();
+    await tocar(tester, find.byKey(const Key('boton-continuar-asistente')));
+    await tocar(tester, find.byKey(const Key('boton-guardar')));
+
+    final aviso = notificador.programados.singleWhere(
+      (a) => a.titulo == 'Llamar a mamá',
+    );
+    expect(aviso.momento, DateTime(2026, 11, 13, 10));
+    // El cierre de hoy ya menciona lo de mañana.
+    expect(notificador.programados.first.cuerpo, 'Mañana: Llamar a mamá.');
+  });
+
   testWidgets('borrar todo regresa al onboarding', (tester) async {
     final almacen = await abrir(tester, conPerfil);
     await tocar(tester, find.byKey(const Key('acceso-perfil')));
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('boton-borrar-todo')),
+      300,
+    );
     await tocar(tester, find.byKey(const Key('boton-borrar-todo')));
     await tocar(tester, find.text('Borrar'));
 

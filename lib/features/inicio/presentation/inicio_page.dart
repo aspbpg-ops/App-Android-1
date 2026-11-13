@@ -1,20 +1,31 @@
+import 'dart:async';
+
 import 'package:asistente_app/features/asistente/presentation/barra_asistente.dart';
+import 'package:asistente_app/features/avisos/data/notificador.dart';
 import 'package:asistente_app/features/calendario/presentation/calendario_tab.dart';
 import 'package:asistente_app/features/inicio/presentation/hoy_tab.dart';
 import 'package:asistente_app/features/inicio/presentation/mi_vida_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Pantalla principal: Hoy, Mi vida y Calendario, con la barra del
 /// asistente siempre a la mano.
-class InicioPage extends StatefulWidget {
+class InicioPage extends ConsumerStatefulWidget {
   const InicioPage({super.key});
 
   @override
-  State<InicioPage> createState() => _InicioPageState();
+  ConsumerState<InicioPage> createState() => _InicioPageState();
 }
 
-class _InicioPageState extends State<InicioPage> {
+class _InicioPageState extends ConsumerState<InicioPage> {
   var _indice = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Android solo muestra el aviso de permiso la primera vez.
+    unawaited(ref.read(notificadorProvider).pedirPermiso());
+  }
 
   @override
   Widget build(BuildContext context) {

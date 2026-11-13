@@ -48,6 +48,12 @@ class DatosController extends Notifier<DatosApp> {
 
   void guardarPerfil(Perfil perfil) => _guardar(state.copyWith(perfil: perfil));
 
+  void cambiarHoraResumen(int minutos) {
+    final perfil = state.perfil;
+    if (perfil == null) return;
+    guardarPerfil(perfil.copyWith(horaResumen: minutos));
+  }
+
   /// Crea la ficha junto con los recordatorios que la persona aceptó.
   Ficha agregarFicha({
     required TipoFicha tipo,

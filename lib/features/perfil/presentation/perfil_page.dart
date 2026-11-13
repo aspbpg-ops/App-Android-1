@@ -1,5 +1,7 @@
 import 'package:asistente_app/core/datos/datos_controller.dart';
 import 'package:asistente_app/core/widgets/confirmar.dart';
+import 'package:asistente_app/features/avisos/data/notificador.dart';
+import 'package:asistente_app/features/recordatorios/domain/recordatorio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,6 +60,45 @@ class PerfilPage extends ConsumerWidget {
                   leading: const Icon(Icons.notifications_outlined),
                   title: const Text('Recordatorios pendientes'),
                   trailing: Text('${datos.pendientes.length}'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  key: const Key('hora-resumen'),
+                  leading: const Icon(Icons.nightlight_outlined),
+                  title: const Text('Cierre del día'),
+                  subtitle: const Text(
+                    'Te aviso de tus notas pendientes y lo de mañana',
+                  ),
+                  trailing: Text(textoHora(perfil.horaResumen)),
+                  onTap: () async {
+                    final hora = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(
+                        hour: perfil.horaResumen ~/ 60,
+                        minute: perfil.horaResumen % 60,
+                      ),
+                    );
+                    if (hora != null) {
+                      ref
+                          .read(datosProvider.notifier)
+                          .cambiarHoraResumen(hora.hour * 60 + hora.minute);
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.notifications_active_outlined),
+                  title: const Text('Probar notificación'),
+                  onTap: () async {
+                    final notificador = ref.read(notificadorProvider);
+                    await notificador.pedirPermiso();
+                    await notificador.probar();
+                  },
                 ),
               ],
             ),
